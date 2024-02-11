@@ -1,3 +1,13 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.9.0"
+    }
+  }
+  required_version = "~> 1.0"
+}
+
 provider "aws" {
   region = "us-east-1"
 }
@@ -30,6 +40,12 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
-output "function_arn" {
-  value = aws_lambda_function.hello_lambda.arn
+resource "aws_lambda_function_url" "lambda_function_url" {
+  function_name = aws_lambda_function.hello_lambda.arn
+  authorization_type = "NONE"
+}
+
+output "function_url" {
+  description = "Function URL."
+  value = aws_lambda_function_url.lambda_function_url.function_url
 }
